@@ -25,7 +25,6 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = SwiftFlutterGeofencingPlugin()
         instance.setupCallHandler(registrar: registrar)
-        instance.callBackHandler = FlutterMethodChannel(name: "plugins.flutter.io/geofencing_plugin_background", binaryMessenger: registrar.messenger())
     }
     
     func setupCallHandler(registrar: FlutterPluginRegistrar) {
@@ -37,7 +36,6 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
                 self.locationManager.delegate = self
                 self.locationManager.requestAlwaysAuthorization()
                 let resultMap: [String: String] = [:]
-
                 result(resultMap)
             } else if call.method == "GeofencingPlugin.registerGeofence" {
                 if let nsArray = call.arguments as? NSArray {
@@ -48,7 +46,6 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
                     if let id = id, let lat = lat, let long = long {
                         let flGeofence: FLGeofence = FLGeofence(callback: callbackHandle ?? 0, id: id, lat: lat.description, long: long.description)
                         self.register(flGeofenceList: [flGeofence])
-                        self.invoke(event: 1, region: nil)
                     }
                 }
                 let resultMap: [String: String] = [:]
@@ -57,6 +54,13 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
                 self.removeRegionMonitering()
                 let resultMap: [String: String] = [:]
                 result(resultMap)
+            }
+        }
+
+        callBackHandler = FlutterMethodChannel(name: "plugins.flutter.io/geofencing_plugin_background", binaryMessenger: registrar.messenger())
+        callBackHandler?.setMethodCallHandler { (call: FlutterMethodCall, result: FlutterResult) in
+            if call.method == "GeofencingService.initialized" {
+                result(nil)
             }
         }
     }
@@ -108,7 +112,7 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
     
     func invoke(event: Int, region: CLRegion?) {
         let geofence = flGeofences.first { (g) in
-            if g.id == region.identifier {
+            if g.id == region?.identifier {
                 return true
             }
             return false
