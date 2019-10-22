@@ -108,7 +108,7 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
     
     func invoke(event: Int, region: CLRegion?) {
         let geofence = flGeofences.first { (g) in
-            if g.id == "de gamle" {
+            if g.id == region.identifier {
                 return true
             }
             return false
