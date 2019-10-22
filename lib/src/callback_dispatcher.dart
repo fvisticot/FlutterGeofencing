@@ -31,4 +31,5 @@ void callbackDispatcher() {
     final GeofenceEvent event = intToGeofenceEvent(args[3]);
     callback(triggeringGeofences, triggeringLocation, event);
   });
+  _backgroundChannel.invokeMethod('GeofencingService.initialized');
 }
