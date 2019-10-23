@@ -1,21 +1,17 @@
 name: flutter_geofencing
-description: A new flutter plugin project.
+description: A geofencing plugin for Flutter applications - Works on both Android and iOS - supports Android X - based on Ben Konyi's Geofencing.
 version: 0.1.2
-author:
-homepage:
+author: Karim Abdo & Bülent Hacioglu based on Ben Konyi <karim.abdo@petleo.net>
+homepage: https://github.com/KarimAbdo/FlutterGeofencing
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
 flutter:
   plugin:
     androidPackage: io.flutter.plugins.geofencing
-    pluginClass: FlutterGeofencingPlugin
+    pluginClass: GeofencingPlugin
