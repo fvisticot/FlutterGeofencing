@@ -157,4 +157,8 @@ class GeofencingManager {
   /// geofence region.
   static Future<bool> removeGeofenceById(String id) async => await _channel
       .invokeMethod('GeofencingPlugin.removeGeofence', <dynamic>[id]);
+
+  /// Stop receiving geofence events for all registered geofence regions.
+  static Future<bool> removeAllGeofences() async => await _channel
+      .invokeMethod('GeofencingPlugin.removeAllGeofences', <dynamic>[]);
 }

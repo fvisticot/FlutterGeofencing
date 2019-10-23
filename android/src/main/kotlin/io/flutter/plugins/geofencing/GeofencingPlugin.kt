@@ -22,7 +22,6 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import org.json.JSONArray
-import org.json.JSONObject
 
 class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandler {
     private val mContext = context
@@ -80,10 +79,10 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
 
         @JvmStatic
         private fun registerGeofence(context: Context,
-                                    geofencingClient: GeofencingClient,
-                                    args: ArrayList<*>?,
-                                    result: Result?,
-                                    cache: Boolean) {
+                                     geofencingClient: GeofencingClient,
+                                     args: ArrayList<*>?,
+                                     result: Result?,
+                                     cache: Boolean) {
             val callbackHandle = args!![0] as Long
             val id = args[1] as String
             val lat = args[2] as Double
@@ -137,10 +136,10 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
 
                 persistentGeofences.add(id)
                 context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-                    .edit()
-                    .putStringSet(PERSISTENT_GEOFENCES_IDS, persistentGeofences)
-                    .putString(getPersistentGeofenceKey(id), obj.toString())
-                    .apply()
+                        .edit()
+                        .putStringSet(PERSISTENT_GEOFENCES_IDS, persistentGeofences)
+                        .putString(getPersistentGeofenceKey(id), obj.toString())
+                        .apply()
             }
         }
 
@@ -190,6 +189,15 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
         }
 
         @JvmStatic
+        private fun removeAllGeofences(context: Context,
+                                       geofencingClient: GeofencingClient,
+                                       args: ArrayList<*>?,
+                                       result: Result) {
+            val geofenceFromCache = getGeofenceFromCache(context)
+            removeGeofence(context, geofencingClient, ArrayList(geofenceFromCache), result)
+        }
+
+        @JvmStatic
         private fun removeGeofenceFromCache(context: Context, id: String) {
             synchronized(sGeofenceCacheLock) {
                 var p = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
@@ -199,9 +207,17 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
                 }
                 persistentGeofences.remove(id)
                 p.edit()
-                .remove(getPersistentGeofenceKey(id))
-                .putStringSet(PERSISTENT_GEOFENCES_IDS, persistentGeofences)
-                .apply()
+                        .remove(getPersistentGeofenceKey(id))
+                        .putStringSet(PERSISTENT_GEOFENCES_IDS, persistentGeofences)
+                        .apply()
+            }
+        }
+
+        @JvmStatic
+        private fun getGeofenceFromCache(context: Context): Set<String>? {
+            synchronized(sGeofenceCacheLock) {
+                var p = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+                return p.getStringSet(PERSISTENT_GEOFENCES_IDS, null)
             }
         }
 
@@ -213,7 +229,7 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         val args = call.arguments() as? ArrayList<*>
-        when(call.method) {
+        when (call.method) {
             "GeofencingPlugin.initializeService" -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     mActivity?.requestPermissions(REQUIRED_PERMISSIONS, 12312)
@@ -222,14 +238,18 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
                 result.success(true)
             }
             "GeofencingPlugin.registerGeofence" -> registerGeofence(mContext,
-                                                                    mGeofencingClient,
-                                                                    args,
-                                                                    result,
-                                                                    true)
+                    mGeofencingClient,
+                    args,
+                    result,
+                    true)
             "GeofencingPlugin.removeGeofence" -> removeGeofence(mContext,
-                                                                mGeofencingClient,
-                                                                args,
-                                                                result)
+                    mGeofencingClient,
+                    args,
+                    result)
+            "GeofencingPlugin.removeAllGeofences" -> removeAllGeofences(mContext,
+                    mGeofencingClient,
+                    args,
+                    result)
             else -> result.notImplemented()
         }
     }
