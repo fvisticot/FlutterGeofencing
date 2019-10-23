@@ -193,8 +193,8 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
                                        geofencingClient: GeofencingClient,
                                        args: ArrayList<*>?,
                                        result: Result) {
-            val geofenceFromCache = getGeofenceFromCache(context)
-            removeGeofence(context, geofencingClient, ArrayList(geofenceFromCache), result)
+            val geofenceIdsFromCache = getGeofenceIdsFromCache(context)
+            removeGeofence(context, geofencingClient, ArrayList(geofenceIdsFromCache), result)
         }
 
         @JvmStatic
@@ -214,7 +214,7 @@ class GeofencingPlugin(context: Context, activity: Activity?) : MethodCallHandle
         }
 
         @JvmStatic
-        private fun getGeofenceFromCache(context: Context): Set<String>? {
+        private fun getGeofenceIdsFromCache(context: Context): Set<String>? {
             synchronized(sGeofenceCacheLock) {
                 var p = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
                 return p.getStringSet(PERSISTENT_GEOFENCES_IDS, null)
