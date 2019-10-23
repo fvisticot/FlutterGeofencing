@@ -1,7 +1,7 @@
 package io.flutter.plugins;
 
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugins.geofencing.FlutterGeofencingPlugin;
+import io.flutter.plugins.geofencing.GeofencingPlugin;
 
 /**
  * Generated file. Do not edit.
@@ -11,7 +11,7 @@ public final class GeneratedPluginRegistrant {
     if (alreadyRegisteredWith(registry)) {
       return;
     }
-    GeofencingPlugin.registerWith(registry.registrarFor("io.flutter.plugins.geofencing.FlutterGeofencingPlugin"));
+    GeofencingPlugin.registerWith(registry.registrarFor("io.flutter.plugins.geofencing.GeofencingPlugin"));
   }
 
   private static boolean alreadyRegisteredWith(PluginRegistry registry) {
