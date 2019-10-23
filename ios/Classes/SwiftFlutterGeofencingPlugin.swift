@@ -95,11 +95,11 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
     }
     
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        invoke(event: 1, region: region)
+        invoke(event: 1)
     }
     
     public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        invoke(event: 2, region: region)
+        invoke(event: 2)
     }
     
     func removeRegionMonitering() {
@@ -110,25 +110,16 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
         }
     }
     
-    func invoke(event: Int, region: CLRegion?) {
-        let geofence = flGeofences.first { (g) in
-            if g.id == region?.identifier {
-                return true
-            }
-            return false
+    func invoke(event: Int) {
+        var args: [Any] = []
+        var identifiers: [String] = []
+        let regions = locationManager.monitoredRegions
+        
+        if !regions.isEmpty {
+          identifiers = regions.compactMap { $0.identifier }
         }
         
-        if let geofence = geofence {
-            var args: [Any] = []
-            args.append(geofence.callback) // callback Int
-            
-            args.append([geofence.id]) // triggeringGeofences List<String> ids
-            
-            args.append([Double(geofence.lat) ?? 0.0, Double(geofence.long) ?? 0.0]) // locationList List<double> long lat
-            
-            args.append(event) // _kEnterEvent = 1 / _kExitEvent = 2
-
-            callBackHandler?.invokeMethod("", arguments: args)
-        }
+        args.append(identifiers)
+        callBackHandler?.invokeMethod("", arguments: args)
     }
 }
