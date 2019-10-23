@@ -58,9 +58,9 @@ class GeofencingService : MethodCallHandler, JobIntentService() {
             mContext = context
             if (sBackgroundFlutterView == null) {
                 val callbackHandle = context.getSharedPreferences(
-                        FlutterGeofencingPlugin.SHARED_PREFERENCES_KEY,
+                        GeofencingPlugin.SHARED_PREFERENCES_KEY,
                         Context.MODE_PRIVATE)
-                        .getLong(FlutterGeofencingPlugin.CALLBACK_DISPATCHER_HANDLE_KEY, 0)
+                        .getLong(GeofencingPlugin.CALLBACK_DISPATCHER_HANDLE_KEY, 0)
 
                 val callbackInfo = FlutterCallbackInformation.lookupCallbackInformation(callbackHandle)
                 if (callbackInfo == null) {
@@ -115,7 +115,7 @@ class GeofencingService : MethodCallHandler, JobIntentService() {
     }
 
     override fun onHandleWork(intent: Intent) {
-        val callbackHandle = intent.getLongExtra(FlutterGeofencingPlugin.CALLBACK_HANDLE_KEY, 0)
+        val callbackHandle = intent.getLongExtra(GeofencingPlugin.CALLBACK_HANDLE_KEY, 0)
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
         if (geofencingEvent.hasError()) {
             Log.e(TAG, "Geofencing error: ${geofencingEvent.errorCode}")
