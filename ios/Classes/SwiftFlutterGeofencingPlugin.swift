@@ -146,9 +146,14 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
         let uri = info.callbackLibraryPath
         
         headLessRunner?.run(withEntrypoint: entryPoint, libraryURI: uri)
+        if let headlessRunner = headLessRunner, let registerPlugin = SwiftFlutterGeofencingPlugin.registerPlugins {
+            registerPlugin(headlessRunner)
+        }
+
         if let callbackHandler = callbackChannel {
             registrar?.addMethodCallDelegate(self, channel: callbackHandler)
         }
+        
     }
     
     func register(args: [Any]) -> Void {
@@ -178,7 +183,11 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
     }
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
-        startGeofencingService(callback: getcallbackDispatcherHandler())
+        
+        if launchOptions[UIApplicationLaunchOptionsKey.location] != nil {
+            startGeofencingService(callback: getcallbackDispatcherHandler())
+        }
+        
         return true
     }
     
