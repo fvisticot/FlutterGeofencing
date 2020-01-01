@@ -41,8 +41,8 @@ class FlutterGeofencingPlugin(context: Context, activity: Activity?) : MethodCal
         val PERSISTENT_GEOFENCES_KEY = "persistent_geofences"
         @JvmStatic
         val PERSISTENT_GEOFENCES_IDS = "persistent_geofences_ids"
-        @JvmStatic
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        //@JvmStatic
+        //private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
         @JvmStatic
         private val sGeofenceCacheLock = Object()
 
@@ -101,13 +101,13 @@ class FlutterGeofencingPlugin(context: Context, activity: Activity?) : MethodCal
                     .setNotificationResponsiveness(notificationResponsiveness)
                     .setExpirationDuration(expirationDuration)
                     .build()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                     (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_DENIED)) {
                 val msg = "'registerGeofence' requires the ACCESS_FINE_LOCATION permission."
                 Log.w(TAG, msg)
                 result?.error(msg, null, null)
-            }
+            }*/
             geofencingClient.addGeofences(getGeofencingRequest(geofence, initialTriggers),
                     getGeofencePendingIndent(context, callbackHandle))?.run {
                 addOnSuccessListener {
@@ -214,9 +214,10 @@ class FlutterGeofencingPlugin(context: Context, activity: Activity?) : MethodCal
         val args = call.arguments() as? ArrayList<*>
         when(call.method) {
             "GeofencingPlugin.initializeService" -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     mActivity?.requestPermissions(REQUIRED_PERMISSIONS, 12312)
-                }
+                }*/
                 initializeService(mContext, args)
                 result.success(true)
             }

@@ -161,8 +161,9 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
         let id = args[1] as? String ?? ""
         let lat = args[2] as? Double ?? 0
         let long = args[3] as? Double ?? 0
+        let radius = args[4] as? Double ?? distanceOnGeolocation
 
-        let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: long), radius: distanceOnGeolocation, identifier: id)
+        let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: long), radius: radius, identifier: id)
         region.notifyOnExit = true
         region.notifyOnEntry = true
         
@@ -209,7 +210,7 @@ public class SwiftFlutterGeofencingPlugin: NSObject, FlutterPlugin, CLLocationMa
     
     public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         if initialized {
-            sendLocationEvent(region: region, event: 0)
+            sendLocationEvent(region: region, event: 2)
         } else {
             eventQueue?[region] = 2
         }
